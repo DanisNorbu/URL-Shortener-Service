@@ -52,80 +52,9 @@
 ## UML-диаграммы
 
 ### Диаграмма классов
-```plantuml
-@startuml
-class Main {
-    + main(String[])
-}
 
-class ConsoleInterface {
-    - urlShortener: UrlShortener
-    - scanner: Scanner
-    - config: Config
-    + start()
-    + createShortUrl()
-    + followShortUrl()
-    + showUserLinks()
-    + deleteShortUrl()
-    + updateClickLimit()
-    + selectUser()
-}
+![dia_url](https://github.com/user-attachments/assets/3fd4b7bf-9db0-4eb5-bb95-460ac7c4d3db)
 
-class UrlShortener {
-    - config: Config
-    - db: Map<Long, UrlData>
-    - users: Map<UUID, User>
-    + createUser()
-    + buildShortUrl()
-    + restoreLongUrl()
-    + getUserLinks()
-    + deleteLink()
-    + updateClickLimit()
-}
-
-class Config {
-    - properties: Properties
-    + Config(String)
-    + getDefaultLinkLifetimeSeconds()
-    + getMaxLinkLifetimeSeconds()
-    + getDefaultClickLimit()
-    + getMaxClickLimit()
-}
-
-class UrlData {
-    - longUrl: String
-    - userId: UUID
-    - clickLimit: long
-    - clicks: long
-    - creationTime: Instant
-    - lifetimeSeconds: int
-    + getLongUrl()
-    + getUserId()
-    + getClickLimit()
-    + isClickable()
-    + isExpired()
-    + incrementClicks()
-    + getRemainingClicks()
-    + getRemainingLifetimeSeconds()
-}
-
-class User {
-    - userId: UUID
-    - links: Map<String, UrlData>
-    + addLink()
-    + getLinks()
-    + getUserId()
-}
-
-Main --> ConsoleInterface
-ConsoleInterface --> UrlShortener
-ConsoleInterface --> Config
-UrlShortener --> Config
-UrlShortener --> UrlData
-UrlShortener --> User
-User --> UrlData
-@enduml
-```
 #### Описание диаграммы
 - Main: Точка входа в программу. Зависит от ConsoleInterface.
 
@@ -142,22 +71,9 @@ User --> UrlData
 ### Диаграмма последовательностей
 
 #### Сценарий: Создание короткой ссылки
-```plantuml
-@startuml
-actor Пользователь
-participant "ConsoleInterface" as CI
-participant "UrlShortener" as US
-participant "UrlData" as UD
-participant "User" as U
 
-Пользователь -> CI: createShortUrl()
-CI -> US: buildShortUrl()
-US -> UD: Создать объект UrlData
-US -> U: addLink()
-US --> CI: Возврат короткой ссылки
-CI --> Пользователь: Отображение короткой ссылки
-@enduml
-```
+![dia_url1](https://github.com/user-attachments/assets/21240ec4-d669-407a-add3-8d0eda1418f4)
+
 #### Описание:
 - Пользователь вызывает метод createShortUrl() в ConsoleInterface.
 
@@ -172,27 +88,9 @@ CI --> Пользователь: Отображение короткой ссы�
 - ConsoleInterface отображает короткую ссылку пользователю.
 
 #### Сценарий: Переход по короткой ссылке
-```plantuml
-@startuml
-actor Пользователь
-participant "ConsoleInterface" as CI
-participant "UrlShortener" as US
-participant "UrlData" as UD
 
-Пользователь -> CI: followShortUrl()
-CI -> US: restoreLongUrl()
-US -> UD: Проверка доступности ссылки
-alt Ссылка доступна
-    UD --> US: Оригинальный URL
-    US --> CI: Оригинальный URL
-    CI -> Пользователь: Открытие URL в браузере
-else Ссылка недоступна
-    UD --> US: null
-    US --> CI: null
-    CI -> Пользователь: Уведомление о недоступности
-end
-@enduml
-```
+![dia_url2](https://github.com/user-attachments/assets/548d7d8b-a45c-4b72-a36b-4276f36305fa)
+
 #### Описание:
 - Пользователь вызывает метод followShortUrl() в ConsoleInterface.
 
